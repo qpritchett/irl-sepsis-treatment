@@ -1,0 +1,36 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+dist/
+build/
+
+# uv
+.venv/
+.uv/
+
+# Environments / Secrets
+.env
+.env.*
+
+# Data (MIMIC-III requires credentialed access)
+data/
+
+/AI-Clinician-MIMICIV
+
+# Trained models
+models/
+*.pt
+*.pkl
+
+# Results/outputs
+results/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+
+# OS
+.DS_Store
+

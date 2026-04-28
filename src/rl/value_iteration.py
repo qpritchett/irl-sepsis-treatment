@@ -7,7 +7,7 @@ downstream models:
 
   1. Komorowski baseline: r = +100 survive, -100 death, 0 elsewhere.
   2. MaxEnt IRL policy: r loaded from models/irl/maxent.pkl.
-  3. IQ-Learn policy: r loaded from models/irl/iq_learn.pkl.
+  3. IQ-Learn policy: r loaded from models/iq_learn/iq_learn.pkl.
 
 Unobserved (s,a) pairs are masked out so the policy can only take
 actions actually seen from each state in the training data.
@@ -26,6 +26,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 MDP_DIR = ROOT / "models" / "mdp"
 IRL_DIR = ROOT / "models" / "irl"
+IQ_LEARN_DIR = ROOT / "models" / "iq_learn"
 OUT_DIR = ROOT / "models" / "rl"
 
 GAMMA = 0.99
@@ -96,7 +97,7 @@ def main():
         with open(IRL_DIR / "maxent.pkl", "rb") as f:
             r = pickle.load(f)["r"]
     else:  # iqlearn
-        with open(IRL_DIR / "iq_learn.pkl", "rb") as f:
+        with open(IQ_LEARN_DIR / "iq_learn.pkl", "rb") as f:
             r = pickle.load(f)["r"]
     print(f"Reward: {args.reward}  range=[{r.min():.3f}, {r.max():.3f}]")
 

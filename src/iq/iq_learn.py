@@ -14,8 +14,8 @@ Terminal state Q-values are frozen at ±(100 - log A) so that logsumexp over
 actions gives V*(s_terminal) = ±100, matching the Komorowski scale.
 
 Usage:
-    python -m src.irl.iq_learn
-    python -m src.irl.iq_learn --epochs 500 --lr 0.01 --alpha 1.0
+    python -m src.iq_learn.iq_learn
+    python -m src.iq_learn.iq_learn --epochs 500 --lr 0.01 --alpha 1.0
 """
 
 import argparse
@@ -28,7 +28,7 @@ from scipy.special import logsumexp, softmax
 ROOT = Path(__file__).resolve().parents[2]
 DATA_DIR = ROOT / "data" / "processed"
 MDP_DIR = ROOT / "models" / "mdp"
-OUT_DIR = ROOT / "models" / "irl"
+OUT_DIR = ROOT / "models" / "iq_learn"
 
 GAMMA = 0.99
 BATCH_SIZE = 1024

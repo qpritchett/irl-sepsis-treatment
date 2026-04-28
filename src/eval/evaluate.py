@@ -17,10 +17,11 @@ All target policies are softened: (1-eps) * greedy + eps * uniform. The
 behavior policy pi_b is the empirical clinician policy from training.
 
 Evaluated policies:
-  - clinician   (pi_b, sanity check)
-  - bc          (models/bc/bc_policy.pkl)
+  - clinician     (pi_b, sanity check)
+  - bc            (models/bc/bc_policy.pkl)
   - vi_komorowski (models/rl/vi_komorowski.pkl)
   - vi_maxent     (models/rl/vi_maxent.pkl)
+  - vi_iqlearn    (models/rl/vi_iqlearn.pkl)
 
 Usage:
     uv run python -m src.eval.evaluate
@@ -36,6 +37,7 @@ DATA_DIR = ROOT / "data" / "processed"
 MDP_DIR = ROOT / "models" / "mdp"
 BC_DIR = ROOT / "models" / "bc"
 RL_DIR = ROOT / "models" / "rl"
+IRL_DIR = ROOT / "models" / "irl"
 
 GAMMA = 0.99
 EPS = 0.01             # softening: (1-eps) * greedy/empirical + eps * uniform
@@ -154,20 +156,23 @@ def load_policies():
         mdp = pickle.load(f)
     pi_b_full = mdp["pi_b"]  # (752, 25)
     pi_b = pi_b_full[:N_STATES]
-
     with open(BC_DIR / "bc_policy.pkl", "rb") as f:
         bc = pickle.load(f)["policy"]
-
     with open(RL_DIR / "vi_komorowski.pkl", "rb") as f:
         vi_k = pickle.load(f)["pi"][:N_STATES]
     with open(RL_DIR / "vi_maxent.pkl", "rb") as f:
         vi_m = pickle.load(f)["pi"][:N_STATES]
-
+    with open(RL_DIR / "ppo_maxent.pkl", "rb") as f:
+        ppo_m = pickle.load(f)["pi"][:N_STATES]
+    with open(RL_DIR / "vi_iqlearn.pkl", "rb") as f:
+        vi_iq = pickle.load(f)["pi"][:N_STATES]
     return {
         "clinician":     soften(pi_b, EPS),
         "bc":            soften(bc, EPS),
         "vi_komorowski": soften(greedy_to_stochastic(vi_k, N_ACTIONS), EPS),
         "vi_maxent":     soften(greedy_to_stochastic(vi_m, N_ACTIONS), EPS),
+        "ppo_maxent":    soften(greedy_to_stochastic(ppo_m, N_ACTIONS), EPS),
+        "vi_iqlearn":    soften(greedy_to_stochastic(vi_iq, N_ACTIONS), EPS),
     }, soften(pi_b, EPS)
 
 

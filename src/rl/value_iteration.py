@@ -7,6 +7,7 @@ downstream models:
 
   1. Komorowski baseline: r = +100 survive, -100 death, 0 elsewhere.
   2. MaxEnt IRL policy: r loaded from models/irl/maxent.pkl.
+  3. IQ-Learn policy: r loaded from models/irl/iq_learn.pkl.
 
 Unobserved (s,a) pairs are masked out so the policy can only take
 actions actually seen from each state in the training data.
@@ -14,6 +15,7 @@ actions actually seen from each state in the training data.
 Usage:
     uv run python -m src.rl.value_iteration --reward komorowski
     uv run python -m src.rl.value_iteration --reward maxent
+    uv run python -m src.rl.value_iteration --reward iqlearn
 """
 
 import argparse
@@ -75,7 +77,7 @@ def komorowski_reward(n_total: int, s_discharge: int, s_death: int):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--reward", choices=["komorowski", "maxent"], required=True)
+    ap.add_argument("--reward", choices=["komorowski", "maxent", "iqlearn"], required=True)
     args = ap.parse_args()
 
     with open(MDP_DIR / "transitions.pkl", "rb") as f:
@@ -90,10 +92,12 @@ def main():
 
     if args.reward == "komorowski":
         r = komorowski_reward(n_total, s_discharge, s_death)
-    else:
+    elif args.reward == "maxent":
         with open(IRL_DIR / "maxent.pkl", "rb") as f:
-            irl = pickle.load(f)
-        r = irl["r"]
+            r = pickle.load(f)["r"]
+    else:  # iqlearn
+        with open(IRL_DIR / "iq_learn.pkl", "rb") as f:
+            r = pickle.load(f)["r"]
     print(f"Reward: {args.reward}  range=[{r.min():.3f}, {r.max():.3f}]")
 
     print("Running value iteration...")
